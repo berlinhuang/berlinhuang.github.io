@@ -83,7 +83,7 @@
 
 
 
-  <link rel="alternate" href="/atom.xml" title="Berlin.H's Notes" type="application/atom+xml" />
+  <link rel="alternate" href="/atom.xml" title="Berlin Huang's Notes" type="application/atom+xml" />
 
 
 
@@ -100,7 +100,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="高并发服务器模型">
 <meta property="og:url" content="http://yoursite.com/2017/07/15/高并发服务器/index.html">
-<meta property="og:site_name" content="Berlin.H&#39;s Notes">
+<meta property="og:site_name" content="Berlin Huang&#39;s Notes">
 <meta property="og:description" content="1 多进程2 多线程 客户端 没有给服务器发送数据，服务器若采用多线程，多进程则全部阻塞掉  3 多路IO复用3.1 select（采用的是轮询模型） 采用select, 将所有的文件描述符给select去监控，有数据到达则返回 socket –&amp;gt; listenfd 1  accept –&amp;gt; connfd 2 3 4 5 都没有请求则在select上面阻塞 select 会返回就绪文件">
 <meta property="og:updated_time" content="2017-07-15T14:18:39.000Z">
 <meta name="twitter:card" content="summary">
@@ -114,7 +114,7 @@
   var CONFIG = {
     root: '/',
     scheme: 'Mist',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     motion: true,
     duoshuo: {
@@ -139,7 +139,7 @@
 
 
 
-  <title>高并发服务器模型 | Berlin.H's Notes</title>
+  <title>高并发服务器模型 | Berlin Huang's Notes</title>
   
 
 
@@ -175,7 +175,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Berlin.H's Notes</span>
+        <span class="site-title">Berlin Huang's Notes</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -281,13 +281,13 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/15/高并发服务器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Berlin.H">
+      <meta itemprop="name" content="Berlin Huang">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Berlin.H's Notes">
+      <meta itemprop="name" content="Berlin Huang's Notes">
     </span>
 
     
@@ -439,6 +439,27 @@
     <div>
       
         
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创分享，您的支持将鼓励我继续创作</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/WechatPay.jpeg" alt="Berlin Huang WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/Alipay.jpeg" alt="Berlin Huang Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
 
       
     </div>
@@ -539,8 +560,8 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="Berlin.H" />
-          <p class="site-author-name" itemprop="name">Berlin.H</p>
+               alt="Berlin Huang" />
+          <p class="site-author-name" itemprop="name">Berlin Huang</p>
            
               <p class="site-description motion-element" itemprop="description">事如春梦了无痕 苟不记之笔墨 未免有辜彼苍之厚</p>
           
@@ -670,7 +691,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Powered By - Berlin.H</span>
+  <span class="author" itemprop="copyrightHolder">Powered By - Berlin Huang</span>
 </div>
 
 

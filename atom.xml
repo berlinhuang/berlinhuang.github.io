@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Berlin Huang&#39;s Notes</title>
+  
+  <subtitle>Quick notes</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2017-07-15T14:18:39.000Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>Berlin Huang</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>高并发服务器模型</title>
+    <link href="http://yoursite.com/2017/07/15/%E9%AB%98%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <id>http://yoursite.com/2017/07/15/高并发服务器/</id>
+    <published>2017-07-15T13:47:43.000Z</published>
+    <updated>2017-07-15T14:18:39.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="1-多进程"><a href="#1-多进程" class="headerlink" title="1 多进程"></a>1 多进程</h1><h1 id="2-多线程"><a href="#2-多线程" class="headerlink" title="2 多线程"></a>2 多线程</h1><ul><li>客户端 没有给服务器发送数据，服务器若采用多线程，多进程则全部阻塞掉</li></ul><h1 id="3-多路IO复用"><a href="#3-多路IO复用" class="headerlink" title="3 多路IO复用"></a>3 多路IO复用</h1><h2 id="3-1-select（采用的是轮询模型）"><a href="#3-1-select（采用的是轮询模型）" class="headerlink" title="3.1 select（采用的是轮询模型）"></a>3.1 select（采用的是轮询模型）</h2><ul><li>采用select, 将所有的文件描述符给select去监控，有数据到达则返回</li><li>socket –&gt; listenfd 1 </li><li>accept –&gt; connfd 2 3 4 5</li><li>都没有请求则在select上面阻塞</li><li>select 会返回就绪文件描述符个数</li><li>检测到 文件描述符1 有数据到达则去调用accept返回 文件描述符6</li><li>检测到 文件描述符2 3 4 5中3 5有数据到达则返回2（阻塞中返回），轮询判断是那几个文件描述符到达，主控线程去读这几个文件描述符调用read</li></ul><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(</span></span></div><div class="line">    <span class="keyword">int</span> nfds, <span class="comment">//最大文件描述符个数+1</span></div><div class="line">    fd_set *readfds, <span class="comment">//可读文件描述符，传入传出参数</span></div><div class="line">    fd_set *writefds, <span class="comment">//可写文件描述符，传入传出参数</span></div><div class="line">    fd_set *exceptfds, <span class="comment">//异常文件描述符，传入传出参数</span></div><div class="line">    struct timeval * timeout <span class="comment">//定时阻塞监控时间 timeval的结构体（包含秒和微秒）</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">int</span> <span class="title">pselect</span><span class="params">(</span></div><div class="line">    <span class="keyword">int</span> nfds, <span class="comment">//最大文件描述符个数+1</span></div><div class="line">    fd_set *readfds, <span class="comment">//可读文件描述符，传入传出参数</span></div><div class="line">    fd_set *writefds, <span class="comment">//可写文件描述符，传入传出参数</span></div><div class="line">    fd_set *exceptfds, <span class="comment">//异常文件描述符，传入传出参数</span></div><div class="line">    <span class="keyword">const</span> struct timespec * timeout, <span class="comment">//timespec结构体（包含秒和纳秒）</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">sigset_t</span> * sigmask<span class="comment">// 阻塞信号屏蔽字</span></div><div class="line">)</div></pre></td></tr></table></figure><ol><li><p>单个进程可监控的fd数量被限制，即能监听端口的大小有限<br>– 一般来说这个数目和系统内存关系很大，具体数目可以cat /proc/sys/fs/file-max察看。32位机默认是1024个。64位机默认是2048</p></li><li><p>对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低<br>– 当套接字比较多的时候，每次select()都要通过遍历FD_SETSIZE个Socket来完成调度,不管哪个Socket是活跃的,都遍历一遍这会浪费很多CPU时间。如果能给套接字注册某个回调函数，当他们活跃时，自动完成相关操作，那就避免了轮询，这正是epoll与kqueue做的</p></li><li><p>需要维护一个用来存放大量fd的数据结构，这样会使得用户空间和内核空间在传递该结构时复制开销大</p></li></ol><hr><ul><li>sigset_t 为信号集，未决（是否未决）和阻塞（是否阻塞）标志都可以用它来表示</li><li>被<strong>阻塞</strong>的信号将处于未决状态，无法递达</li><li><strong>忽略</strong>则是信号到达后的一种处理</li></ul><h2 id="3-2-poll"><a href="#3-2-poll" class="headerlink" title="3.2 poll"></a>3.2 poll</h2><ul><li>解决1024一下客户端使用select很合适</li><li>如果客户端过多，select是轮询模型会大大降低服务器响应效率，不应在select 上投入更多精力</li><li></li><li>不在局限于1024个文件描述符</li><li>谁有问题就举手回答，不用去提问（轮询或阻塞）</li><li></li><li>如果不在监控某个文件描述符，可以吧pollfd中fd设置为-1, poll不在监控此pollfd</li></ul><p>它没有最大连接数的限制，原因是它是基于链表来存储的，但是同样有一个缺点：</p><ol><li>大量的fd的数组被整体复制于用户态和内核地址空间之 间，而不管这样的复制是不是有意 义。  </li><li>poll还有一个特点是“水平触发”，如果报告了fd后，没有被处理，那么下次poll时会再次报告该fd</li></ol><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span><span class="params">(</span></span></div><div class="line">    struct pollfd *fds,</div><div class="line">    <span class="keyword">nfds_t</span> nfds,</div><div class="line">    <span class="keyword">int</span> timeout</div><div class="line">)</div><div class="line"></div><div class="line">struct pollfd&#123;</div><div class="line">    <span class="keyword">int</span> fd; <span class="comment">//文件描述符</span></div><div class="line">    <span class="keyword">short</span> event; <span class="comment">//监控的时间</span></div><div class="line">    <span class="keyword">short</span> revent; <span class="comment">//监控中满足条件返回的事件</span></div><div class="line">&#125;</div></pre></td></tr></table></figure><h2 id="3-3-epoll"><a href="#3-3-epoll" class="headerlink" title="3.3 epoll"></a>3.3 epoll</h2><ul><li>提高<strong>大量并发连接，只有少量活跃</strong> cpu利用率</li><li><strong>复用文件描述符集合</strong>来传递结果， 而不用每次等待事件发生时必须重新准备要被监听的文件描述符集合</li><li>获取事件的时候，<strong>无序遍历整个被监听的文件描述符集合</strong>， 只需遍历哪些被内核IO事件异步唤醒而加入Ready队列的文件描述符集合</li><li>epoll的优点：</li></ul><ol><li>没有最大并发连接的限制，能打开的FD的上限远大于1024（1G的内存上能监听约10万个端口）；</li><li>效率提升，不是轮询的方式，不会随着FD数目的增加效率下降。只有活跃可用的FD才会调用callback函数；即Epoll最大的优点就在于它只管你“活跃”的连接，而跟连接总数无关，因此在实际的网络环境中，Epoll的效率就会远远高于select和poll。</li><li>内存拷贝，利用mmap()文件映射内存加速与内核空间的消息传递；即epoll使用mmap减少复制开销。</li></ol><h3 id="电平触发-Level-Triggered"><a href="#电平触发-Level-Triggered" class="headerlink" title="电平触发(Level Triggered)"></a>电平触发(Level Triggered)</h3><ul><li>selet/poll采用这种方式</li><li>epoll()</li></ul><h3 id="边沿触发-Edge-Triggered"><a href="#边沿触发-Edge-Triggered" class="headerlink" title="边沿触发(Edge Triggered)"></a>边沿触发(Edge Triggered)</h3><ul><li>epoll()</li><li>使得用户空间有可能缓存IO状态，减少epoll_wait/epoll_pwait调用</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;1-多进程&quot;&gt;&lt;a href=&quot;#1-多进程&quot; class=&quot;headerlink&quot; title=&quot;1 多进程&quot;&gt;&lt;/a&gt;1 多进程&lt;/h1&gt;&lt;h1 id=&quot;2-多线程&quot;&gt;&lt;a href=&quot;#2-多线程&quot; class=&quot;headerlink&quot; title=&quot;2 多
+      
+    
+    </summary>
+    
+      <category term="服务器" scheme="http://yoursite.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+      <category term="服务器架构" scheme="http://yoursite.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%B6%E6%9E%84/"/>
+    
+      <category term="服务器模型" scheme="http://yoursite.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://yoursite.com/2017/07/15/hello-world/"/>
+    <id>http://yoursite.com/2017/07/15/hello-world/</id>
+    <published>2017-07-15T11:33:35.000Z</published>
+    <updated>2017-07-15T11:33:35.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
