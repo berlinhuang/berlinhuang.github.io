@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-15T14:18:39.000Z</updated>
+  <updated>2017-10-22T15:05:36.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>英文学习赞美别人</title>
+    <link href="http://yoursite.com/2017/10/22/%E8%8B%B1%E6%96%87%E5%AD%A6%E4%B9%A0%E8%B5%9E%E7%BE%8E%E5%88%AB%E4%BA%BA/"/>
+    <id>http://yoursite.com/2017/10/22/英文学习赞美别人/</id>
+    <published>2017-10-22T14:40:53.000Z</published>
+    <updated>2017-10-22T15:05:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Talk-1-Apperance"><a href="#Talk-1-Apperance" class="headerlink" title="Talk 1 Apperance"></a>Talk 1 Apperance</h1><p><strong>Tom:</strong> Hey Mandy, you look great today!<br><strong>Mandy:</strong> Oh, thanks!<br><strong>Tom:</strong> Nice jacket. Where did you get it?<br><strong>Mandy:</strong> This one? I borrowed it from my dad!<br><strong>Tom:</strong> Well, this jacket looks good on you!</p><p>You look great/amazing/good/pretty/fantastic today!<br>Nice hair/sweater/watch!</p><h1 id="Talk-2-Performance"><a href="#Talk-2-Performance" class="headerlink" title="Talk 2 Performance"></a>Talk 2 Performance</h1><p><strong>Tom:</strong> Good morning, Catherine.<br><strong>Catherine:</strong> Good morning<br><strong>Tom:</strong> Your presentation yesterday, I think you did a great job. Especially your solutions to the problem, that was impressive!<br><strong>Catherine:</strong> Oh! I’m glad to hear that.<br><strong>Tom:</strong> I think you’re making a lot of progress, Keep up the good work!<br><strong>Catherine:</strong> Thank you, I will!</p><p>gread/good/fantastic/excellent</p><h1 id="Talk-3-Lover"><a href="#Talk-3-Lover" class="headerlink" title="Talk 3 Lover"></a>Talk 3 Lover</h1><p>God, you’re just perfect! I’m so lucky to have you in my life!</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;Talk-1-Apperance&quot;&gt;&lt;a href=&quot;#Talk-1-Apperance&quot; class=&quot;headerlink&quot; title=&quot;Talk 1 Apperance&quot;&gt;&lt;/a&gt;Talk 1 Apperance&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;Tom:&lt;/
+      
+    
+    </summary>
+    
+      <category term="日常英文" scheme="http://yoursite.com/categories/%E6%97%A5%E5%B8%B8%E8%8B%B1%E6%96%87/"/>
+    
+    
+      <category term="英文学习" scheme="http://yoursite.com/tags/%E8%8B%B1%E6%96%87%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>高并发服务器模型</title>
